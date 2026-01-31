@@ -1,118 +1,306 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Panel de Gobernanza Centinell</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<title>Centinell Platform | Human-Governed Defense</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #081c2f, #0c2a45);
-      color: #ffffff;
-    }
+<style>
+/* =====================================================
+   GLOBAL DESIGN TOKENS
+===================================================== */
+:root{
+  --bg-main:#020617;
+  --bg-deep:#010814;
+  --bg-header:#0b2a4a;
+  --bg-panel:#0e1f33;
+  --bg-panel-soft:#132b4a;
 
-    header {
-      padding: 28px;
-      text-align: center;
-      background: #0b2d4f;
-    }
+  --accent:#38bdf8;
+  --accent-soft:#7dd3fc;
 
-    header h1 {
-      margin: 0;
-      font-size: 26px;
-      letter-spacing: 0.5px;
-    }
+  --ok:#22c55e;
+  --warn:#facc15;
 
-    header p {
-      margin-top: 8px;
-      font-size: 14px;
-      color: #9cc4e4;
-    }
+  --text-main:#e5e7eb;
+  --text-soft:#9ca3af;
 
-    .container {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
-      padding: 32px;
-    }
+  --radius:16px;
+}
 
-    .card {
-      background: #132f4c;
-      border-radius: 12px;
-      padding: 22px;
-      box-shadow: 0 10px 18px rgba(0,0,0,0.35);
-    }
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  font-family:"Segoe UI",Arial,Helvetica,sans-serif;
+  background:radial-gradient(circle at top,#061c33 0%,var(--bg-main) 45%,var(--bg-deep) 100%);
+  color:var(--text-main);
+}
 
-    .card h3 {
-      margin-top: 0;
-      font-size: 16px;
-      color: #6dd5ff;
-      margin-bottom: 12px;
-    }
+/* =====================================================
+   LOGIN
+===================================================== */
+#loginView{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
 
-    .card p {
-      margin: 6px 0;
-      font-size: 13px;
-    }
+.login-box{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-soft));
+  padding:46px;
+  width:380px;
+  border-radius:var(--radius);
+  box-shadow:0 40px 80px rgba(0,0,0,.7);
+  text-align:center;
+}
 
-    footer {
-      text-align: center;
-      padding: 16px;
-      font-size: 12px;
-      color: #7aa6c9;
-      background: #081c2f;
-    }
+/* Lighthouse Logo */
+.lighthouse-wrapper{margin-bottom:34px;position:relative}
+.lighthouse{
+  width:74px;height:220px;margin:0 auto;
+  background:linear-gradient(180deg,#f1f5f9,#9ca3af);
+  border-radius:12px;
+}
+.lighthouse::before{
+  content:"";
+  position:absolute;
+  top:-58px;left:50%;
+  transform:translateX(-50%);
+  width:140px;height:64px;
+  background:linear-gradient(180deg,#fde68a,#facc15);
+  border-radius:12px;
+  box-shadow:0 0 70px rgba(250,204,21,.95);
+}
+.beam{
+  position:absolute;
+  top:-44px;left:50%;
+  width:320px;height:320px;
+  transform:translateX(-50%);
+  background:conic-gradient(
+    transparent 0deg,
+    rgba(250,204,21,.35) 22deg,
+    rgba(250,204,21,.12) 48deg,
+    transparent 82deg
+  );
+  border-radius:50%;
+  animation:spin 14s linear infinite;
+}
+@keyframes spin{
+  from{transform:translateX(-50%) rotate(0deg)}
+  to{transform:translateX(-50%) rotate(360deg)}
+}
 
-    .ok { color: #7CFF9B; }
-    .warn { color: #FFD36E; }
-  </style>
+.login-box h2{color:var(--accent);margin-bottom:20px}
+.login-box label{display:block;text-align:left;font-size:12px;color:var(--text-soft)}
+.login-box input{
+  width:100%;padding:11px;margin:8px 0 18px;
+  background:#020617;border:1px solid #1f3b5a;
+  color:#fff;border-radius:8px;
+}
+.login-box button{
+  width:100%;padding:14px;
+  background:var(--accent);border:none;
+  border-radius:8px;font-weight:700;cursor:pointer;
+}
+
+/* =====================================================
+   PLATFORM
+===================================================== */
+#platform{display:none}
+
+/* Header */
+header{
+  background:var(--bg-header);
+  padding:46px 24px;
+  text-align:center;
+  box-shadow:0 12px 40px rgba(0,0,0,.6);
+}
+header h1{font-size:34px}
+header p{color:#9cc7ff;font-size:14px;margin-top:10px}
+
+/* Main */
+main{
+  max-width:1400px;
+  margin:60px auto;
+  padding:0 20px;
+  display:flex;
+  flex-direction:column;
+  gap:70px;
+}
+
+/* Grid */
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:26px;
+}
+
+.card{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-soft));
+  padding:28px;
+  border-radius:var(--radius);
+  box-shadow:0 22px 55px rgba(0,0,0,.45);
+  cursor:pointer;
+  transition:.3s;
+}
+.card:hover{transform:translateY(-6px)}
+.card h3{color:var(--accent);margin-bottom:10px}
+.card p{font-size:14px;color:var(--text-soft)}
+
+/* =====================================================
+   MODULE VIEWS
+===================================================== */
+.moduleView{display:none}
+.moduleHeader{
+  background:linear-gradient(180deg,#0b2a4a,#081a2f);
+  padding:36px;text-align:center;
+}
+.moduleHeader h2{color:var(--accent)}
+.moduleMain{
+  max-width:1200px;
+  margin:50px auto;
+  padding:0 20px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:26px;
+}
+.panel{
+  background:linear-gradient(180deg,var(--bg-panel),var(--bg-panel-soft));
+  padding:26px;
+  border-radius:var(--radius);
+  box-shadow:0 18px 40px rgba(0,0,0,.45);
+}
+.panel h4{color:var(--accent);margin-bottom:10px}
+.panel canvas{width:100%;height:140px;background:#020617;border-radius:10px}
+
+/* Back */
+.backBtn{
+  display:block;margin:40px auto;
+  padding:12px 26px;
+  border:none;border-radius:8px;
+  background:var(--accent);
+  font-weight:700;cursor:pointer;
+}
+
+/* Footer */
+footer{
+  margin-top:90px;
+  padding:40px 20px;
+  text-align:center;
+  font-size:13px;
+  color:#94a3b8;
+}
+</style>
 </head>
 
 <body>
 
+<!-- ================= LOGIN ================= -->
+<div id="loginView">
+  <div class="login-box">
+    <div class="lighthouse-wrapper">
+      <div class="beam"></div>
+      <div class="lighthouse"></div>
+    </div>
+    <h2>Authorized Access</h2>
+    <label>Username</label>
+    <input id="user">
+    <label>Password</label>
+    <input id="pass" type="password">
+    <button onclick="login()">Enter Platform</button>
+  </div>
+</div>
+
+<!-- ================= PLATFORM ================= -->
+<div id="platform">
+
 <header>
-  <h1>Panel de gobernanza de Centinell</h1>
-  <p>Supervisión ética de ciberseguridad e IA empresarial</p>
+  <h1>Centinell Platform</h1>
+  <p>Human-Governed Cyber Defense & Ethical AI Oversight</p>
+  <p id="operatorInfo"></p>
 </header>
 
-<section class="container">
+<main>
 
-  <div class="card">
-    <h3>Estado del sistema</h3>
-    <p class="ok">● Operacional</p>
-    <p>Human-in-the-loop: Habilitado</p>
-    <p>Autoridad de decisión: Solo humana</p>
-  </div>
-
-  <div class="card">
-    <h3>Gobernanza ética</h3>
-    <p>Decision Ledger: Activo</p>
-    <p>Nivel de autonomía: Limitado</p>
-    <p class="warn">Validación ética: Requerida</p>
-  </div>
-
-  <div class="card">
-    <h3>Preparación normativa</h3>
-    <p>NIST / ISO: Listo</p>
-    <p>Auditoría: Habilitada</p>
-    <p>Trazabilidad: Completa</p>
-  </div>
-
-  <div class="card">
-    <h3>Monitoreo</h3>
-    <p>Supervisión continua: Activa</p>
-    <p>Alertas: Ninguna</p>
-    <p>Detección de anomalías: En espera</p>
-  </div>
-
+<section class="grid">
+  <!-- 30 MODULE CARDS -->
+  <div class="card" onclick="openModule('OceanCentinell')"><h3>OceanCentinell</h3><p>Maritime cyber defense & radar oversight</p></div>
+  <div class="card" onclick="openModule('IA-Centinell')"><h3>IA-Centinell</h3><p>Human-governed AI decision layer</p></div>
+  <div class="card" onclick="openModule('Centinell AI-2')"><h3>Centinell AI-2</h3><p>Advanced ethical AI orchestration</p></div>
+  <div class="card" onclick="openModule('CoreShield')"><h3>CoreShield</h3><p>Critical infrastructure resilience</p></div>
+  <div class="card" onclick="openModule('NexusSentinel')"><h3>NexusSentinel</h3><p>Multi-domain orchestration core</p></div>
+  <div class="card" onclick="openModule('DeepWatcher')"><h3>DeepWatcher</h3><p>Deep threat timeline analysis</p></div>
+  <div class="card" onclick="openModule('Blue Maritime')"><h3>Blue Maritime</h3><p>Port & maritime domain security</p></div>
+  <div class="card" onclick="openModule('Orbital')"><h3>Orbital</h3><p>Space & satellite cyber oversight</p></div>
+  <div class="card" onclick="openModule('SkyCentinell')"><h3>SkyCentinell</h3><p>Aerial & aviation cyber defense</p></div>
+  <div class="card" onclick="openModule('ForensIQ')"><h3>ForensIQ</h3><p>Ethical forensic intelligence</p></div>
+  <div class="card" onclick="openModule('ForensicCentinell')"><h3>ForensicCentinell</h3><p>Institutional forensic platform</p></div>
+  <div class="card" onclick="openModule('Biometric')"><h3>Biometric</h3><p>Biometric security governance</p></div>
+  <div class="card" onclick="openModule('BioCrypt')"><h3>BioCrypt</h3><p>Biological & medical crypto defense</p></div>
+  <div class="card" onclick="openModule('DynaWall')"><h3>DynaWall</h3><p>Adaptive digital perimeter</p></div>
+  <div class="card" onclick="openModule('IceShield')"><h3>IceShield</h3><p>Cold-path secure infrastructure</p></div>
+  <div class="card" onclick="openModule('SignalCore')"><h3>SignalCore</h3><p>Signal & communication defense</p></div>
+  <div class="card" onclick="openModule('Strategic Firewall')"><h3>Strategic Firewall</h3><p>High-level firewall orchestration</p></div>
+  <div class="card" onclick="openModule('Tactical Firewall')"><h3>Tactical Firewall</h3><p>Operational firewall control</p></div>
+  <div class="card" onclick="openModule('Predictive Defense')"><h3>Predictive Defense</h3><p>Threat anticipation engine</p></div>
+  <div class="card" onclick="openModule('ShieldPoint')"><h3>ShieldPoint</h3><p>Defense anchor module</p></div>
+  <div class="card" onclick="openModule('VoidSeal')"><h3>VoidSeal</h3><p>Isolation & containment layer</p></div>
 </section>
 
+</main>
+
 <footer>
-  © 2026 Centinell Suite Defense · Ético · Gobernado por humanos  
-  <br>Desarrollado por Victoria en Cristo Jesús
+© 2026 Centinell Suite Defense · Human Authority Reserved
 </footer>
+
+</div>
+
+<!-- ================= MODULE TEMPLATE ================= -->
+<div id="moduleView" class="moduleView">
+  <div class="moduleHeader">
+    <h2 id="moduleTitle"></h2>
+    <p>Operational Dashboard</p>
+  </div>
+
+  <div class="moduleMain">
+    <div class="panel"><h4>Live Overview</h4><canvas></canvas></div>
+    <div class="panel"><h4>Operational Grid</h4><canvas></canvas></div>
+    <div class="panel"><h4>Human Control Layer</h4><canvas></canvas></div>
+  </div>
+
+  <button class="backBtn" onclick="back()">← Back to Platform</button>
+</div>
+
+<script>
+function login(){
+  if(!user.value||!pass.value){alert("Credentials required");return;}
+  sessionStorage.setItem("centinell","ok");
+  sessionStorage.setItem("operator",user.value);
+  loginView.style.display="none";
+  platform.style.display="block";
+  operatorInfo.textContent="Human Operator: "+user.value;
+}
+if(sessionStorage.getItem("centinell")==="ok"){
+  loginView.style.display="none";
+  platform.style.display="block";
+  operatorInfo.textContent="Human Operator: "+sessionStorage.getItem("operator");
+}
+
+function openModule(name){
+  platform.style.display="none";
+  moduleView.style.display="block";
+  moduleTitle.textContent=name;
+}
+
+function back(){
+  moduleView.style.display="none";
+  platform.style.display="block";
+}
+</script>
 
 </body>
 </html>
+
+
